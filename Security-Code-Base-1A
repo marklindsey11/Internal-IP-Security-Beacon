@@ -1,0 +1,89 @@
+#Mark Lindsey/Intelligence Clouds
+Re-Routing-Block
+Python 3.8/JSON
+Beta Open-Source Net-neutral
+v1.1
+
+
+import socket
+
+# Create a socket object
+s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
+
+# Define list to store IP data
+ip_list = []
+
+while True: # Monitor continuously
+
+    # Receive data from the socket
+    data = s.recv(4096)
+
+    # Extract the IP address from the data
+    ip_address = data[0:4]
+
+    # Check if the IP address is already in the list
+    if ip_address not in ip_list:
+        # Add IP address to list
+        ip_list.append(ip_address)
+    else:
+        # Duplicate IP address found
+        print("Duplicate IP address detected: " + ip_address)
+
+        # Alert user
+        print("Alerting user...")
+
+
+import socket
+
+# Create a socket object
+s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
+
+# Define list to store IP data
+ip_list = []
+
+while True: # Monitor continuously
+
+    # Receive data from the socket
+    data = s.recv(4096)
+
+    # Extract the IP address from the data
+    ip_address = data[0:4]
+
+    # Check if the IP address is already in the list
+    if ip_address not in ip_list:
+        # Add IP address to list
+        ip_list.append(ip_address)
+    else:
+        # Duplicate IP address found
+        print("Duplicate IP address detected: " + ip_address)
+
+        # Alert user
+        print#!/usr/bin/env python3
+
+import os
+
+# Get router's IP address
+router_ip = input("Enter router's IP address: ")
+
+# Get gateway's IP address
+gateway_ip = input("Enter gateway's IP address: ")
+
+# Modify path attributes
+command = f"telnet {router_ip} config t route-map set ip next-hop {gateway_ip}"
+
+# Execute command
+os.system(command)
+
+# Enable persistent routing
+command = f"telnet {router_ip} config-route-map persist"
+
+# Execute command
+os.system(command)
+
+# Exit
+print("Routing successfully modified.")
+("Alerting user...")
+
+
+        
+        
