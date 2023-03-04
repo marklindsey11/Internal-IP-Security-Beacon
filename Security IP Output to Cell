@@ -1,0 +1,91 @@
+
+    The output from th listening beacon is ported to alert an app on a smart phone. 
+
+Push notifications: 
+
+    The listening beacon can send push notifications to a mobile app when it detects any suspicious or unauthorized activity on the network. The app is configured to display the notification to the user and provide additional information about the event.
+
+SMS and email alerts: 
+
+       The listening beacon is configured to send SMS and email alerts to a designated phone number or email address. The recipient then take appropriate action based on the information provided in the alert.
+
+Mobile device management (MDM) integration: 
+
+    The script uses MDM software to manage and monitor mobile devices. The listening beacon is integrated with the MDM software, which can push alerts to the appropriate mobile devices.
+
+    Overall, the approach taken depends on the specific needs and requirements of the system, as well as the available resources and expertise of the organization implementing the solution.
+
+
+    Cobalt Strike is used to install and monitor inbound traffic on the network, and it is configured to generate alerts that can be sent via MDM software.
+
+    Cobalt Strike is a powerful penetration testing tool that can be used for various security testing purposes, including simulating attacks and identifying vulnerabilities. One of its capabilities is to set up a beacon on a proprietaty system, which allows the administrator to remotely control and monitor the system. The beacon is configured to send various types of information back to the administrator, including information about inbound network traffic.
+
+    To generate alerts and send them via MDM software, the Cobalt Strike beacon is configured to send the relevant information to the MDM software, which would then trigger the appropriate alerts. This is done using custom scripting and by leveraging existing integrations between Cobalt Strike and the MDM software.
+
+    It is worth noting that while Cobalt Strike can be a useful tool for security testing and monitoring, it can also be used by malicious actors to carry out attacks. Therefore, it should only be used for legitimate security purposes by authorized individuals or organizations.
+
+
+    Integrating a Cobalt Strike beacon with an MDM software would require a custom script that is specific to the MDM software being used. The exact configuration o of the script  depend on the API and integration capabilities of the MDM software.
+
+    Here is the Python3 code template that is used as a foundation for integrating a Cobalt Strike beacon with an MDM software:
+
+    This code uses the MDM software API endpoint that receives requests to register the new beacon URL. The script sets the necessary headers and payload for the request and sends it using the requests library in Python. The response is checked to confirm that the beacon URL was successfully registered with the MDM software.
+
+     This script uses the c2 module in Cobalt Strike to interact with the target system over SMB. The target host and port are defined at the beginning of the script, along with the configuration settings for the beacon. The payload is generated using Cobalt Strike's payloads module, and the SMBConnection class from the Impacket library is used to establish a connection to the port.
+
+    Once connected, the script uploads the payload to the network and executes it, then starts the beacon on the specified port using the beacon method from the CobaltStrike class.
+
+    Installing and using a Cobalt Strike beacon on someone elses network or system system without proper authorization is illegal and could result in criminal charges.
+
+    Cobalt Strike beacon records the IP of any inbound traffic and perform a traceroute to the source IP address. This functionality is built into the beacon module in Cobalt Strike.
+
+    When a beacon is running, it is configured to log all incoming traffic to a file using the log option. This log file will contain information about the source IP address, destination IP address, protocol, and other relevant details.
+
+    In addition to logging traffic, the beacon module also provides a built-in route command that is used to perform a traceroute to a specified IP address. This command is used to trace the route of incoming traffic back to the source IP address.
+
+Here's the the log and route commands in a Cobalt Strike beacon:
+
+bash
+
+beacon> log enable
+beacon> log local /path/to/log/file.log
+beacon> route 8.8.8.8
+
+    The first two commands enable logging and specify the path to the log file. The third command performs a traceroute to the IP address 8.8.8.8. This traceroute is used to trace the route of incoming traffic back to the source IP address.
+
+It's worth noting that logging and tracing incoming traffic in this way is useful for identifying potential attackers and analyzing network traffic.
+
+Here's a high-level overview of how the platform implements each smi-automated check:
+
+    Is the route published on the BGP route registry? 
+
+    This check requires querying the BGP route registry database to see if the IP address of the inbound request is part of a valid BGP route. It use the Python library  pybgpstream and exabgp to perform this query. It tripps the alert if false.
+
+    Is there an unexpected hop in the route? 
+
+    To perform this check, the script performs a traceroute to the source IP address and compare the route taken with a known good route. The is stored the known good route the database and configuration file. And tripps the alert if IP is blacklisted, or black-holed.
+
+    Is the CA self-signed?
+
+    To perform this check, the script needs to inspect the SSL certificate presented by the inbound request and check if it is signed by a trusted Certificate Authority (CA). The script uses the library cryptography and OpenSSL to perform this check, and triggers an alert if true.
+
+    Is the SSL mis-matched? 
+
+    This check involve's comparing the SSL certificate presented by the inbound request to the expected certificate for the domain. It is stored with the expected certificate in a database and configuration file, and triggers the alert when mismatch is true.
+
+    Has the domain been dropped from the DNS zone? 
+
+    To perform this check, the script performs a DNS lookup for the domain and see if it resolves to an IP address. If the domain has been dropped from the DNS zone, it will not resolve to an IP address and the alert will be triggered.
+
+    Once these checks have been performed, if there is an alert, it is sent to the mobile device using the messaging service like Twilio.
+
+I   mplementing all of these checks required a significant amount of custom code and integration with various open source libraries and services. It's also important to note that performing these types of checks without proper authorization, I made this code under a GNU license found on https://github.com/marklindsey11/
+
+
+    The benefits of installing a listening beacon on one's own ports includes the ability to monitor inbound traffic and detect unauthorized access attempts. This is useful in identifying potential security threats and taking appropriate action to mitigate them.
+
+    In order to integrate the beacon with an MDM (mobile device management) software, the custom script was written to automate the process of checking inbound traffic for specific conditions and sending alerts to the MDM software if those conditions are met. For example, the script is configured to check each inbound request for the presence of a valid BGP route, an expected route, a valid SSL certificate, a self-signed CA, a mismatched SSL, or a dropped domain. If any of these conditions are met, the script could trigger an alert via the MDM software.
+
+    The custom script is written in Python 3.8 and is designed to run on a Windows 10 Pro or Enterprise operating systems. The script listen's on any port that's user- defined and is capable of recording the IP address of any inbound traffic, as well as performing traceroute checks on the inbound request to ensure that the route taken is expected. The scrip also is capable of performing the various checks described above, including querying a BGP route registry database, checking SSL certificates, and checking the DNS zone for the domain. If any of these checks fail, the script would trigger an alert via the MDM software. I keep mentioning that because it takes a little time to understand the process.
+
+Overall, the integration of a custom Cobalt Strike beacon with an MDM software can provide a powerful security monitoring solution for identifying potential threats and taking appropriate action to mitigate them. By automating the process of checking inbound traffic for specific conditions, security teams can respond more quickly and effectively to potential security incidents.
