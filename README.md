@@ -1,9 +1,14 @@
 # Internal-IP-Security-Beacon
-Security Inbound Traffic Inspection Point
+#Security Inbound Traffic Inspection Point
+
 #Mark Lindsey/Intelligence Clouds
+
 #Internal IP Security Beacon
+
 #Developers Notes and Code Base
+
 #2IP-SB Beta v2,2
+
 #Python3.8/JASON
 
 
